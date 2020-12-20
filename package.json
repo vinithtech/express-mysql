@@ -1,0 +1,40 @@
+{
+  "name": "Aadhar",
+  "version": "1.0.0",
+  "description": "Aadhar Bazaar",
+  "main": "server.js",
+  "scripts": {
+    "test": "snyk test",
+    "start": "nodemon server.js",
+    "build:dev": "snyk test && NODE_ENV=development nodemon server.js",
+    "build:stage": "snyk test && NODE_ENV=staging nodemon server.js",
+    "build:prod": "NODE_ENV=production nodemon server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@mdhnpm/aws-ssm-parameters": "^1.0.3",
+    "axios": "^0.18.0",
+    "body-parser": "^1.18.2",
+    "cacheman-file": "^0.2.1",
+    "compression": "^1.7.2",
+    "cors": "^2.8.4",
+    "express": "^4.16.2",
+    "express-basic-auth": "^1.2.0",
+    "helmet": "^3.13.0",
+    "http": "0.0.0",
+    "jsonwebtoken": "^8.3.0",
+    "lodash": "^4.17.11",
+    "moment": "^2.24.0",
+    "morgan": "^1.9.0",
+    "mysql": "^2.18.1",
+    "newrelic": "^5.2.0",
+    "node-rsa": "^1.0.8",
+    "nodemon": "^1.17.5",
+    "request": "^2.87.0",
+    "winston": "^3.1.0"
+  },
+  "devDependencies": {
+    "snyk": "^1.95.3"
+  }
+}
