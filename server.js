@@ -23,7 +23,7 @@ const userRoutes = require("./app/routes/user");
 const app = express();
 var http = require("http");
 var httpServer = http.createServer(app);
-httpServer.listen(process.env.PORT || 3001);
+httpServer.listen(process.env.PORT || 3000);
 
 const mysql = require("mysql");
 // connection configurations
