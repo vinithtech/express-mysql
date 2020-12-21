@@ -18,11 +18,12 @@ const helmet = require("helmet");
 
 // Importing Route Files
 const customerRoutes = require("./app/routes/customer");
+const userRoutes = require("./app/routes/user");
 
 const app = express();
 var http = require("http");
 var httpServer = http.createServer(app);
-httpServer.listen(process.env.PORT || 3000);
+httpServer.listen(process.env.PORT || 3001);
 
 const mysql = require("mysql");
 // connection configurations
@@ -79,6 +80,7 @@ app.use(morgan("dev"));
 
 //Routes
 app.use(`/customer`, customerRoutes);
+app.use(`/user`, userRoutes);
 
 // Error Handling - Returning 404 if Route Not Found.
 app.use((req, res, next) => {

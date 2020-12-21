@@ -25,6 +25,7 @@ exports.create_a_customer = function (req, res) {
 };
 
 exports.read_a_customer = function (req, res) {
+  console.log("callllllllll");
   Customer.getCustomerById(req.params.customerId, function (err, customer) {
     if (err) res.send(err);
     res.json(customer);
