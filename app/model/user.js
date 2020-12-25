@@ -15,7 +15,7 @@ User.validateUser = function (userData, result) {
       if (err) {
         result(err, null);
       } else {
-        result(null, res && res.length > 0 ? res : "Not found");
+        result(null, res.length > 0 ? res[0] : 0);
       }
     }
   );
