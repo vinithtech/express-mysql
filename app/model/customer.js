@@ -1,5 +1,13 @@
 "user strict";
+
 var sql = require("../db.js");
+
+const constant = require("../../constant");
+
+var aliasFields = `customer_id as id, customer_name as name, customer_proof_number as proof_number, customer_proof_type as proof_type,
+customer_name as name, customer_phone as phone, customer_martial as martial, customer_address as address, customer_gender as gender, customer_dob as dob, customer_district as district,
+customer_state as state, customer_pincode as pincode, customer_covid_status as covid_status, customer_year_of_birth as year_of_birth, customer_location_name as location_name, customer_covid_result as covid_result, user_id
+`;
 
 //Customer object constructor
 var Customer = function (customer) {
@@ -21,14 +29,30 @@ var Customer = function (customer) {
   this.user_id = customer.user_id;
 };
 
-Customer.getAllCustomers = function (result) {
-  sql.query("Select * from customers", function (err, res) {
-    if (err) {
-      result(err, null);
-    } else {
-      result(null, res);
+Customer.getAllCustomers = function (
+  req,
+  result,
+  limit = 0,
+  offset = constant.PAGINATION_OFFSET
+) {
+  limit =
+    req.params.limit && req.params.limit !== undefined
+      ? req.params.limit
+      : limit;
+  offset =
+    req.params.offset && req.params.offset !== undefined
+      ? req.params.offset
+      : offset;
+  sql.query(
+    `Select ${aliasFields} from customers  order by customer_id desc LIMIT ${limit},${offset}`,
+    function (err, res) {
+      if (err) {
+        result(err, null);
+      } else {
+        result(null, res);
+      }
     }
-  });
+  );
 };
 
 Customer.createCustomer = function (newCustomer, result) {
@@ -42,16 +66,17 @@ Customer.createCustomer = function (newCustomer, result) {
 };
 
 Customer.getCustomerById = function (userId, result) {
-  sql.query("Select * from customers where customer_id = ? ", userId, function (
-    err,
-    res
-  ) {
-    if (err) {
-      result(err, null);
-    } else {
-      result(null, res[0]);
+  sql.query(
+    `Select ${aliasFields} from customers where customer_id = ? `,
+    userId,
+    function (err, res) {
+      if (err) {
+        result(err, null);
+      } else {
+        result(null, res[0]);
+      }
     }
-  });
+  );
 };
 
 Customer.updateById = function (id, customer, result) {
@@ -167,6 +192,24 @@ Customer.remove = function (id, result) {
       }
     }
   });
+};
+
+Customer.getCustomerBySearchTerm = function (term, result) {
+  sql.query(
+    `Select 
+    ${aliasFields}
+    from customers where customer_proof_number like '%${term}%' 
+    OR customer_name like '%${term}%' 
+    OR customer_phone like '%${term}%' 
+    OR customer_pincode like '%${term}%' order by customer_id desc`,
+    function (err, res) {
+      if (err) {
+        result(err, null);
+      } else {
+        result(null, res);
+      }
+    }
+  );
 };
 
 module.exports = Customer;

@@ -13,8 +13,12 @@ router
   .route("/delete/:customerId")
   .delete(customerController.delete_a_customer);
 
-router.route("/listing").get(customerController.list_all_customers);
+router
+  .route("/listing/:limit?/:offset?")
+  .get(customerController.list_all_customers);
 
 router.route("/create").post(customerController.create_a_customer);
+
+router.route("/search/:term").get(customerController.search_customer);
 
 module.exports = router;

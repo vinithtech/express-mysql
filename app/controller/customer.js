@@ -1,12 +1,11 @@
 "use strict";
 
-const constant = require("../../constant");
 let responseCommon = require("../common/response");
 
 var Customer = require("../model/customer");
 
 exports.list_all_customers = function (req, res) {
-  Customer.getAllCustomers(function (err, customer) {
+  Customer.getAllCustomers(req, function (err, customer) {
     if (err) {
       responseCommon.responseStruct(
         res,
@@ -146,6 +145,28 @@ exports.delete_a_customer = function (req, res) {
           {}
         );
       }
+    }
+  });
+};
+
+exports.search_customer = function (req, res) {
+  Customer.getCustomerBySearchTerm(req.params.term, function (err, customer) {
+    if (err) {
+      responseCommon.responseStruct(
+        res,
+        417,
+        417,
+        err.sqlMessage,
+        err.sqlMessage
+      );
+    } else {
+      responseCommon.responseStruct(
+        res,
+        200,
+        200,
+        `Customer Lists by ${req.params.term}`,
+        customer.length > 0 ? customer : "No Records"
+      );
     }
   });
 };
