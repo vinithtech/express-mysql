@@ -32,8 +32,8 @@ var Customer = function (customer) {
 Customer.getAllCustomers = function (
   req,
   result,
-  limit = 0,
-  offset = constant.PAGINATION_OFFSET
+  limit = constant.PAGINATION_LIMIT,
+  offset = 1
 ) {
   limit =
     req.params.limit && req.params.limit !== undefined
@@ -41,18 +41,27 @@ Customer.getAllCustomers = function (
       : limit;
   offset =
     req.params.offset && req.params.offset !== undefined
-      ? req.params.offset
-      : offset;
-  sql.query(
-    `Select ${aliasFields} from customers  order by customer_id desc LIMIT ${limit},${offset}`,
-    function (err, res) {
-      if (err) {
-        result(err, null);
-      } else {
-        result(null, res);
-      }
+      ? (req.params.offset - 1) * limit
+      : (offset - 1) * limit;
+
+  sql.query(`Select ${aliasFields} from customers `, function (err, res) {
+    if (err) {
+      result(err, null);
+    } else {
+      let totalRecords = res.length;
+      sql.query(
+        `Select ${aliasFields} from customers ORDER BY customer_id desc LIMIT ${limit} OFFSET ${offset}`,
+        function (err, res) {
+          if (err) {
+            result(err, null);
+          } else {
+            res.total = totalRecords;
+            result(null, res);
+          }
+        }
+      );
     }
-  );
+  });
 };
 
 Customer.createCustomer = function (newCustomer, result) {

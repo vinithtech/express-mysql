@@ -15,12 +15,16 @@ exports.list_all_customers = function (req, res) {
         err.sqlMessage
       );
     } else {
+      let cusotmerResult = {
+        customerList: customer,
+        totalRecords: customer["total"]
+      };
       responseCommon.responseStruct(
         res,
         200,
         200,
         "List of Customers",
-        customer
+        cusotmerResult
       );
     }
   });
