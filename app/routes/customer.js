@@ -15,7 +15,7 @@ router
 
 router
   .route("/listing/:limit?/:offset?")
-  .get(customerController.list_all_customers);
+  .post(customerController.list_all_customers);
 
 router.route("/create").post(customerController.create_a_customer);
 

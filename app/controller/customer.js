@@ -5,29 +5,40 @@ let responseCommon = require("../common/response");
 var Customer = require("../model/customer");
 
 exports.list_all_customers = function (req, res) {
-  Customer.getAllCustomers(req, function (err, customer) {
-    if (err) {
-      responseCommon.responseStruct(
-        res,
-        417,
-        417,
-        err.sqlMessage,
-        err.sqlMessage
-      );
-    } else {
-      let cusotmerResult = {
-        customerList: customer,
-        totalRecords: customer["total"]
-      };
-      responseCommon.responseStruct(
-        res,
-        200,
-        200,
-        "List of Customers",
-        cusotmerResult
-      );
-    }
-  });
+  var customers_list = req.body;
+  if (!customers_list.user_id || !customers_list.user_type) {
+    responseCommon.responseStruct(
+      res,
+      417,
+      417,
+      "Please provide require details",
+      {}
+    );
+  } else {
+    Customer.getAllCustomers(req.body, function (err, customer) {
+      if (err) {
+        responseCommon.responseStruct(
+          res,
+          417,
+          417,
+          err.sqlMessage,
+          err.sqlMessage
+        );
+      } else {
+        let cusotmerResult = {
+          customerList: customer,
+          totalRecords: customer["total"]
+        };
+        responseCommon.responseStruct(
+          res,
+          200,
+          200,
+          "List of Customers",
+          cusotmerResult
+        );
+      }
+    });
+  }
 };
 
 exports.create_a_customer = function (req, res) {

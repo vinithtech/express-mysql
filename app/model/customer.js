@@ -29,28 +29,37 @@ var Customer = function (customer) {
   this.user_id = customer.user_id;
 };
 
-Customer.getAllCustomers = function (
-  req,
-  result,
-  limit = constant.PAGINATION_LIMIT,
-  offset = 1
-) {
-  limit =
-    req.params.limit && req.params.limit !== undefined
-      ? req.params.limit
-      : limit;
-  offset =
-    req.params.offset && req.params.offset !== undefined
-      ? (req.params.offset - 1) * limit
+Customer.getAllCustomers = function (req, result) {
+  let user_id = req.user_id;
+  let user_type = req.user_type;
+  let limit = req.page_limit ? req.page_limit : constant.PAGINATION_LIMIT;
+  let page_number = req.page_number ? req.page_number : 1;
+  let term = req.search_term ? req.search_term : "";
+
+  let offset =
+    page_number && page_number !== undefined
+      ? (page_number - 1) * limit
       : (offset - 1) * limit;
 
-  sql.query(`Select ${aliasFields} from customers `, function (err, res) {
+  let sql_query =
+    user_type === "admin"
+      ? `Select ${aliasFields} from customers where 1=1`
+      : `Select ${aliasFields} from customers where user_id=${user_id}`;
+  if (term) {
+    sql_query =
+      sql_query +
+      ` AND (customer_proof_number like '%${term}%' 
+      OR customer_name like '%${term}%' 
+      OR customer_phone like '%${term}%' 
+      OR customer_pincode like '%${term}%')`;
+  }
+  sql.query(sql_query, function (err, res) {
     if (err) {
       result(err, null);
     } else {
       let totalRecords = res.length;
       sql.query(
-        `Select ${aliasFields} from customers ORDER BY customer_id desc LIMIT ${limit} OFFSET ${offset}`,
+        `${sql_query} ORDER BY customer_id desc LIMIT ${limit} OFFSET ${offset}`,
         function (err, res) {
           if (err) {
             result(err, null);
