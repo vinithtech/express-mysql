@@ -106,12 +106,14 @@ Customer.updateById = function (id, customer, result) {
       result(err, null);
     } else {
       customer.customer_proof_number =
-        customer.proof_number && customer.proof_number != undefined
-          ? customer.proof_number
+        customer.customer_proof_number &&
+        customer.customer_proof_number != undefined
+          ? customer.customer_proof_number
           : res[0]["customer_proof_number"];
       customer.customer_proof_type =
-        customer.proof_type && customer.proof_type != undefined
-          ? customer.proof_type
+        customer.customer_proof_type &&
+        customer.customer_proof_type != undefined
+          ? customer.customer_proof_type
           : res[0]["customer_proof_type"];
       customer.customer_name =
         customer.customer_name && customer.customer_name != undefined
@@ -155,16 +157,19 @@ Customer.updateById = function (id, customer, result) {
           : res[0]["customer_covid_status"];
 
       customer.customer_year_of_birth =
-        customer.year_of_birth && customer.year_of_birth != undefined
-          ? customer.year_of_birth
+        customer.customer_year_of_birth &&
+        customer.customer_year_of_birth != undefined
+          ? customer.customer_year_of_birth
           : res[0]["customer_year_of_birth"];
       customer.customer_location_name =
-        customer.location_name && customer.location_name != undefined
-          ? customer.location_name
+        customer.customer_location_name &&
+        customer.customer_location_name != undefined
+          ? customer.customer_location_name
           : res[0]["customer_location_name"];
       customer.customer_covid_result =
-        customer.covid_result && customer.covid_result != undefined
-          ? customer.covid_result
+        customer.customer_covid_result &&
+        customer.customer_covid_result != undefined
+          ? customer.customer_covid_result
           : res[0]["customer_covid_result"];
       customer.user_id =
         customer.user_id && customer.user_id != undefined
