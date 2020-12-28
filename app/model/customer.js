@@ -105,16 +105,6 @@ Customer.updateById = function (id, customer, result) {
     if (err) {
       result(err, null);
     } else {
-      customer.customer_proof_number =
-        customer.customer_proof_number &&
-        customer.customer_proof_number != undefined
-          ? customer.customer_proof_number
-          : res[0]["customer_proof_number"];
-      customer.customer_proof_type =
-        customer.customer_proof_type &&
-        customer.customer_proof_type != undefined
-          ? customer.customer_proof_type
-          : res[0]["customer_proof_type"];
       customer.customer_name =
         customer.customer_name && customer.customer_name != undefined
           ? customer.customer_name
@@ -151,11 +141,23 @@ Customer.updateById = function (id, customer, result) {
         customer.customer_pincode && customer.customer_pincode != undefined
           ? customer.customer_pincode
           : res[0]["customer_pincode"];
-      customer.customer_covid_status =
-        customer.covid_status && customer.covid_status != undefined
-          ? customer.covid_status
-          : res[0]["customer_covid_status"];
 
+      customer.customer_proof_number =
+        customer.customer_proof_number &&
+        customer.customer_proof_number != undefined
+          ? customer.customer_proof_number
+          : res[0]["customer_proof_number"];
+      customer.customer_proof_type =
+        customer.customer_proof_type &&
+        customer.customer_proof_type != undefined
+          ? customer.customer_proof_type
+          : res[0]["customer_proof_type"];
+
+      customer.customer_covid_status =
+        customer.customer_covid_status &&
+        customer.customer_covid_status != undefined
+          ? customer.customer_covid_status
+          : res[0]["customer_covid_status"];
       customer.customer_year_of_birth =
         customer.customer_year_of_birth &&
         customer.customer_year_of_birth != undefined
