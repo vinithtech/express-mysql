@@ -6,7 +6,8 @@ const constant = require("../../constant");
 
 var aliasFields = `customer_id as id, customer_name as name, customer_proof_number as proof_number, customer_proof_type as proof_type,
 customer_name as name, customer_phone as phone, customer_martial as martial, customer_address as address, customer_gender as gender, customer_dob as dob, customer_district as district,
-customer_state as state, customer_pincode as pincode, customer_covid_status as covid_status, customer_year_of_birth as year_of_birth, customer_location_name as location_name, customer_covid_result as covid_result, user_id
+customer_state as state, customer_pincode as pincode, customer_covid_status as covid_status, customer_year_of_birth as year_of_birth, customer_location_name as location_name, customer_covid_result as covid_result, 
+user_id, updated_by
 `;
 
 //Customer object constructor
@@ -27,6 +28,7 @@ var Customer = function (customer) {
   this.customer_location_name = customer.location_name;
   this.customer_covid_result = customer.covid_result;
   this.user_id = customer.user_id;
+  this.updated_by = customer.updated_by;
 };
 
 Customer.getAllCustomers = function (req, result) {
@@ -177,6 +179,10 @@ Customer.updateById = function (id, customer, result) {
         customer.user_id && customer.user_id != undefined
           ? customer.user_id
           : res[0]["user_id"];
+      customer.updated_by =
+        customer.updated_by && customer.updated_by != undefined
+          ? customer.updated_by
+          : res[0]["updated_by"];
       sql.query(
         "UPDATE customers SET ? WHERE customer_id = ?",
         [customer, id],
