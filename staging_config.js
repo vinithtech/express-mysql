@@ -5,7 +5,8 @@ const config = {
     user: "root",
     password: "password",
     database: "aadhar"
-  }
+  },
+  base_doman: "http://localhost:3000"
 };
 
 module.exports = config;

@@ -21,4 +21,10 @@ router.route("/create").post(customerController.create_a_customer);
 
 router.route("/search/:term").get(customerController.search_customer);
 
+router
+  .route("/generate/:limit?/:offset?")
+  .post(customerController.generate_customers);
+
+router.route("/download/:file").get(customerController.download_customer);
+
 module.exports = router;
