@@ -171,7 +171,6 @@ Customer.updateById = function (id, customer, result) {
           ? customer.customer_location_name
           : res[0]["customer_location_name"];
       customer.customer_covid_result =
-        customer.customer_covid_result &&
         customer.customer_covid_result != undefined
           ? customer.customer_covid_result
           : res[0]["customer_covid_result"];
