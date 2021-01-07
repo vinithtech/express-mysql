@@ -216,33 +216,82 @@ exports.generate_customers = function (req, res) {
         const jsonData = JSON.parse(
           JSON.stringify(cusotmerResult.customerList)
         );
+        let filter =
+          req.body && req.body.filter && req.body.filter.length > 0
+            ? req.body.filter
+            : false;
         let rand = Date.now();
+        console.log("A", filter && filter.includes("name"), "B", !filter);
+        let headerArray = [];
+        let headerTitles = [
+          "id",
+          "name",
+          "proof_number",
+          "proof_type",
+          "phone",
+          "martial",
+          "address",
+          "gender",
+          "dob",
+          "district",
+          "state",
+          "pincode",
+          "covid_status",
+          "year_of_birth",
+          "location_name",
+          "covid_result",
+          "user_id",
+          "created_name",
+          "updated_by",
+          "updated_name",
+          "created_date",
+          "updated_date",
+          "dob_year",
+          "age"
+        ];
+        headerTitles.map(h => {
+          (filter && filter.includes(h)) || !filter
+            ? headerArray.push({ id: h, title: h })
+            : "";
+        });
         const csvWriter = createCsvWriter({
           path: `app/common/files/customers/customers_list_${rand}.csv`,
-          header: [
-            { id: "id", title: "id" },
-            { id: "name", title: "name" },
-            { id: "proof_number", title: "proof_number" },
-            { id: "proof_type", title: "proof_type" },
-            { id: "phone", title: "phone" },
-            { id: "martial", title: "martial" },
-            { id: "address", title: "address" },
-            { id: "gender", title: "gender" },
-            { id: "dob", title: "dob" },
-            { id: "district", title: "district" },
-            { id: "state", title: "state" },
-            { id: "pincode", title: "pincode" },
-            { id: "covid_status", title: "covid_status" },
-            { id: "year_of_birth", title: "year_of_birth" },
-            { id: "location_name", title: "location_name" },
-            { id: "covid_result", title: "covid_result" },
-            { id: "user_id", title: "user_id" },
-            { id: "updated_by", title: "updated_by" }
-          ]
+          header: headerArray
+        });
+
+        let customJsonData = [...jsonData];
+        customJsonData.map((k, index) => {
+          if (k.dob && k.dob !== null) {
+            let d = new Date(Number(k.dob));
+            customJsonData[
+              index
+            ].dob = `${d.getMonth()}/${d.getDate()}/${d.getFullYear()}`;
+            customJsonData[index].created_date = new Date(k.created_date)
+              .toISOString()
+              .slice(0, 19)
+              .replace("T", " ");
+            customJsonData[index].updated_date = new Date(k.updated_date)
+              .toISOString()
+              .slice(0, 19)
+              .replace("T", " ");
+            customJsonData[index].dob_year = d.getFullYear();
+            let dob = new Date(
+              `${d.getMonth()}/${d.getDate()}/${d.getFullYear()}`
+            );
+            //calculate month difference from current date in time
+            let month_diff = Date.now() - dob.getTime();
+            //convert the calculated difference in date format
+            let age_dt = new Date(month_diff);
+            //extract year from date
+            let year = age_dt.getUTCFullYear();
+            //now calculate the age of the user
+            let age = Math.abs(year - 1970);
+            customJsonData[index].age = age;
+          }
         });
 
         csvWriter
-          .writeRecords(jsonData)
+          .writeRecords(customJsonData)
           .then(() =>
             responseCommon.responseStruct(res, 200, 200, "Generate Customers", {
               file: `${config.base_doman}/customer/download/customers_list_${rand}.csv`

@@ -4,10 +4,12 @@ var sql = require("../db.js");
 
 const constant = require("../../constant");
 
-var aliasFields = `customer_id as id, customer_name as name, customer_proof_number as proof_number, customer_proof_type as proof_type,
-customer_name as name, customer_phone as phone, customer_martial as martial, customer_address as address, customer_gender as gender, customer_dob as dob, customer_district as district,
-customer_state as state, customer_pincode as pincode, customer_covid_status as covid_status, customer_year_of_birth as year_of_birth, customer_location_name as location_name, customer_covid_result as covid_result, 
-user_id, updated_by
+var aliasFields = `cu.customer_id as id, cu.customer_name as name, cu.customer_proof_number as proof_number, cu.customer_proof_type as proof_type,
+cu.customer_name as name, cu.customer_phone as phone, cu.customer_martial as martial, cu.customer_address as address, cu.customer_gender as gender, 
+cu.customer_dob as dob, cu.customer_district as district,
+cu.customer_state as state, cu.customer_pincode as pincode, cu.customer_covid_status as covid_status, 
+cu.customer_year_of_birth as year_of_birth, cu.customer_location_name as location_name, cu.customer_covid_result as covid_result, 
+cu.user_id, u.user_name as created_name, cu.updated_by, u1.user_name as updated_name, cu.created_date, cu.updated_date
 `;
 
 //Customer object constructor
@@ -45,23 +47,24 @@ Customer.getAllCustomers = function (req, result) {
 
   let sql_query =
     user_type === "admin"
-      ? `Select ${aliasFields} from customers where 1=1`
-      : `Select ${aliasFields} from customers where user_id=${user_id}`;
+      ? `Select ${aliasFields} from customers as cu left join users as u on u.user_id = cu.user_id left join users as u1 on u1.user_id = cu.updated_by where 1=1`
+      : `Select ${aliasFields} from customers as cu left join users as u on u.user_id = cu.user_id left join users as u1 on u1.user_id = cu.updated_by where cu.user_id=${user_id}`;
   if (term) {
     sql_query =
       sql_query +
-      ` AND (customer_proof_number like '%${term}%' 
-      OR customer_name like '%${term}%' 
-      OR customer_phone like '%${term}%' 
-      OR customer_pincode like '%${term}%')`;
+      ` AND (cu.customer_proof_number like '%${term}%' 
+      OR cu.customer_name like '%${term}%' 
+      OR cu.customer_phone like '%${term}%' 
+      OR cu.customer_pincode like '%${term}%')`;
   }
+  console.log("sql", sql_query);
   sql.query(sql_query, function (err, res) {
     if (err) {
       result(err, null);
     } else {
       let totalRecords = res.length;
       sql.query(
-        `${sql_query} ORDER BY customer_id desc LIMIT ${limit} OFFSET ${offset}`,
+        `${sql_query} ORDER BY cu.customer_id desc LIMIT ${limit} OFFSET ${offset}`,
         function (err, res) {
           if (err) {
             result(err, null);
