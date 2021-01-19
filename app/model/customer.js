@@ -231,10 +231,7 @@ Customer.getCustomerBySearchTerm = function (term, result) {
   sql.query(
     `Select 
     ${aliasFields}
-    from customers where customer_proof_number like '%${term}%' 
-    OR customer_name like '%${term}%' 
-    OR customer_phone like '%${term}%' 
-    OR customer_pincode like '%${term}%' order by customer_id desc`,
+    from customers where customer_id = '${term}' order by customer_id desc`,
     function (err, res) {
       if (err) {
         result(err, null);
