@@ -50,12 +50,7 @@ Customer.getAllCustomers = function (req, result) {
       ? `Select ${aliasFields} from customers as cu left join users as u on u.user_id = cu.user_id left join users as u1 on u1.user_id = cu.updated_by where 1=1`
       : `Select ${aliasFields} from customers as cu left join users as u on u.user_id = cu.user_id left join users as u1 on u1.user_id = cu.updated_by where cu.user_id=${user_id}`;
   if (term) {
-    sql_query =
-      sql_query +
-      ` AND (cu.customer_proof_number like '%${term}%' 
-      OR cu.customer_name like '%${term}%' 
-      OR cu.customer_phone like '%${term}%' 
-      OR cu.customer_pincode like '%${term}%')`;
+    sql_query = sql_query + ` AND cu.customer_id = '${term}' `;
   }
   console.log("sql", sql_query);
   sql.query(sql_query, function (err, res) {
@@ -231,7 +226,10 @@ Customer.getCustomerBySearchTerm = function (term, result) {
   sql.query(
     `Select 
     ${aliasFields}
-    from customers where customer_id = '${term}' order by customer_id desc`,
+    from customers where customer_proof_number like '%${term}%' 
+    OR customer_name like '%${term}%' 
+    OR customer_phone like '%${term}%' 
+    OR customer_pincode like '%${term}%' order by customer_id desc`,
     function (err, res) {
       if (err) {
         result(err, null);
